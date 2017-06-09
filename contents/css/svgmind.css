@@ -1,0 +1,76 @@
+@charset 'utf-8';
+
+#my-mind-box {
+	width: 100vw;
+	height: 100vh;
+}
+
+
+#my-mind-box circle {
+	cursor: pointer;
+}
+
+.nodes-point {
+    fill: #8BC34A;
+    stroke: #4CAF50;
+    stroke-width: 1;
+    transition: fill .4s ease, stroke .4s ease;
+}
+
+.nodes-point:hover {
+    fill: #CDDC39;
+    stroke: #8BC34A;
+}
+.focus .nodes-point {
+	fill: #FFEB3B;
+    stroke: #FFC107;
+}
+
+.node-line-box line.dotted-line,
+.node-line-box line.solid-line {
+	stroke-width: 1;
+	stroke: #ddd;
+    transition: stroke .4s ease;
+}
+.node-line-box line.dotted-line {
+	stroke-dasharray: 3 2;
+}
+
+.node-line-box.hover line {
+	stroke: #9E9E9E;
+}
+.nodes-box.focus line {
+	stroke: #FFC107;
+}
+
+
+.arrow-ico {
+}
+#end-arrow {
+	fill: #ddd;
+    transition: fill .4s ease;
+}
+#end-hover-arrow {
+	fill: #9E9E9E;
+    transition: fill .4s ease;
+}
+#end-focus-arrow {
+	fill: #FFC107;
+    transition: fill .4s ease;
+}
+line.end-solid-arrow {
+	marker-end: url(#end-arrow);
+}
+
+.node-line-box.hover line.end-solid-arrow {
+	marker-end: url(#end-hover-arrow);
+}
+.nodes-box.focus line.end-solid-arrow {
+	marker-end: url(#end-focus-arrow);
+}
+
+.node-line-box path {
+	stroke-width: 1;
+	stroke: #ddd;
+	fill: transparent;
+}
