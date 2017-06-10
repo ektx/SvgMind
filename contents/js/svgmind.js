@@ -2,20 +2,26 @@
 function SvgMind() {
 	// 绘制区
 	this.el = '';
-	// 数据
-	this.data = '';
 	// 记录点的位置
 	this.pointPosition = {};
+	// 记录点的数组
+	this.pointArr = [];
+	// 选择功能
+	this.selected = [];
 
 	this.option = {
+		// 每个点之间 y 轴距离
 		perHeight: 100,
+		// 每个点之间 x 轴距离
 		perWidth: 200,
 		// 与父级相持平行,只有在自己的个数比父级的个数少时起用
 		follow: true,
+		// 圆的属性
 		circle: {
+			// 半径
 			r: 12
 		},
-		// 是否支持多选, treu 多选择 false 单选
+		// 是否支持多选, true 多选择 false 单选
 		selectedMode: false,
 		line: {
 			refX: 0,
@@ -90,19 +96,21 @@ SvgMind.prototype = {
 		+ ' ' + (s.y + t.y) /2 + ',' + t.x
 		+ ' ' + t.x +',' + t.y;
 	},
-	
+
+
 	// 获取每级的个数
 	getType: function() {
 	
-		var typeArr = [];
-		var typeObj = [];
-		var typeArrIndex = 0;
+		let typeArrIndex = 0;
 
-		var doWith = function(json, parentId) {
-			for (var i = 0, l = json.length; i < l; i++) {
-				var _child = json[i].child;
-				var _name = json[i].name;
-				var _id = json[i].id;
+		let doWith = (json, parentId) => {
+			for (let i = 0, l = json.length; i < l; i++) {
+				let _child = json[i].child;
+				let _id = json[i].id;
+
+				if (json[i].select) {
+					this.selected.push( '#'+_id )
+				}
 
 				if (_child) {
 					typeArrIndex++;
@@ -110,31 +118,31 @@ SvgMind.prototype = {
 				}
 
 				// 生成数组
-				if (!typeArr[typeArrIndex]) {
-					typeArr[typeArrIndex] = []
-					typeObj[typeArrIndex] = []
+				if (!this.pointArr[typeArrIndex]) {
+					this.pointArr[typeArrIndex] = []
 				}
 
 				// 判断是否已经存在
-				if (typeArr[typeArrIndex].indexOf(_id) == -1) {
-					typeArr[typeArrIndex].push(_id);
+				if (!(_id in this.pointPosition)) {
 
-					// 添加父级信息
-					json[i]._parent = parentId;
+					this.pointArr[typeArrIndex].push(_id);
 
-					typeObj[typeArrIndex].push(json[i])
+					this.pointPosition[_id] = {
+						_self: json[i],
+						_parent: [ parentId ]
+					}
+
+				} else {
+					// 追加父级信息
+					this.pointPosition[_id]._parent.push( parentId )
 				}
 			}
 
 			typeArrIndex--;
 		}
 
-		doWith( this.data );
+		doWith( this.option.data );
 
-		return {
-			typeArr: typeArr,
-			typeObj: typeObj
-		};
 	},
 
 	// 绘制线
@@ -144,18 +152,17 @@ SvgMind.prototype = {
 
 		json.forEach(function(n,i) {
 
-			// var lineBox = d3.select('#'+n.id); 
-			var thisPoint = d3.select('#'+n.id+' .nodes-point')
+			let thisPoint = d3.select('#'+n.id+' .nodes-point')
 
 			if (n.child) {
 				
-				var lineBox = d3.select('#'+n.id)
+				let lineBox = d3.select('#'+n.id)
 				.insert('g', '.nodes-point')
 				.classed('node-line-box', true);
 
 				// 生成线
-				for (var i = 0, l = n.child.length; i < l; i++) {
-					var childNodePoint = d3.select('#'+n.child[i].id+' .nodes-point');
+				for (let i = 0, l = n.child.length; i < l; i++) {
+					let childNodePoint = d3.select('#'+n.child[i].id+' .nodes-point');
 
 					lineBox.append('line')
 					// 添加箭头
@@ -168,9 +175,9 @@ SvgMind.prototype = {
 					.attr('y2', childNodePoint.attr('cy'));
 
 					// lineBox.append('path')
-					// .attr('d', diagonal(
+					// .attr('d', _self.diagonal(
 					// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
-					// 	{x: childNodePoint.attr('cx'), y: childNodePoint.attr('cy')}
+					// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
 					// ))
 
 				}
@@ -182,11 +189,47 @@ SvgMind.prototype = {
 		})
 	},
 
+	drawText: function(ele, text, x, y) {
+		ele
+			.append('text')
+			.text( text )
+			.attr('text-anchor', this.option.text.textAnchor)
+			.attr('x', x)
+			.attr('y', y)
+			.attr('dy', this.option.text.dy)
+			.attr('dx', this.option.text.dx)
+	},
+
 	// 绘制点
 	drawPoint: function() {
 
 		let _self = this;
-		let linkArr = _self.linkArr;
+		let linkArr = _self.pointArr;
+
+		// 取x, y
+		let getParentOption = (parentArr) => {
+			let xArr = [];
+			let yArr = [];
+
+			for (let i = 0, l = parentArr.length; i < l; i++) {
+				let _parent = _self.pointPosition[parentArr[i]]._self;
+
+				xArr.push( _parent.x );
+				yArr.push( _parent.y );
+			}
+
+			let xMax = Math.max.apply({}, xArr);
+			let xMin = Math.min.apply({}, xArr);
+
+			let yMax = Math.max.apply({}, yArr);
+			let yMin = Math.min.apply({}, yArr);
+
+			return {
+				x: (xMax - xMin) / 2 + xMin,
+				y: (yMax - yMin) / 2 + yMin
+			}
+
+		}
 
 		for (let i = 0, l = linkArr.length; i < l; i++) {
 			
@@ -195,31 +238,30 @@ SvgMind.prototype = {
 
 			for (let n = 0, m = linkArr[i].length; n < m; n++) {
 
+				// 得到自己的 id
+				let _thisID = linkArr[i][n];
+				let _thisInfo = _self.pointPosition[_thisID]._self;
 				let x = i * _self.option.perWidth + (_self.svgW/2) - colW;
 				let y = n * _self.option.perHeight + (_self.svgH/2) - colH;
 
 				if (i > 0) {
 					// 如果要让点与父级平行
 					if (_self.option.follow && linkArr[i].length <= linkArr[i -1].length) {
-						let _p = linkArr[i][n]._parent;
-						x = _self.pointPosition[_p]._self.x + _self.option.perWidth;
-						y = _self.pointPosition[_p]._self.y;
+						// 得到父级的信息
+						let _parentID = _self.pointPosition[_thisID]._parent;
+						let _parent = getParentOption(_parentID);
+
+						x = _parent.x + _self.option.perWidth;
+						y = _parent.y;
 					} 
 				}
 
 				// 保存点的位置
-				_self.pointPosition[linkArr[i][n].id] = {
-					_self: {
-						x: x,
-						y: y
-					},
-					_parent: [
-
-					]
-				};
+				_self.pointPosition[ _thisID ]._self.x = x;
+				_self.pointPosition[ _thisID ]._self.y = y;
 				
 				let circleBox = _self.svgBody.append('g')
-				.attr('id', linkArr[i][n].id)
+				.attr('id', _thisID)
 				.classed('nodes-box', true)
 				
 				circleBox.append('circle')
@@ -246,20 +288,9 @@ SvgMind.prototype = {
 					// 选择效果
 					this.parentNode.classList.toggle('focus');
 
-					// 移动居中
-					// let moveX = _self.svgW / 2;
-					// _self.events.selected.call(_self, moveX, 0, 1);
-
 				});
-				
-				circleBox
-				.append('text')
-				.text(linkArr[i][n].name)
-				.attr('text-anchor', _self.option.text.textAnchor)
-				.attr('x', x)
-				.attr('y', y)
-				.attr('dy', _self.option.text.dy)
-				.attr('dx', _self.option.text.dx)
+
+				this.drawText(circleBox, _thisInfo.name, x, y)
 
 			}
 		};
@@ -309,7 +340,15 @@ SvgMind.prototype = {
 			d3.select(this).classed('dragging', false)
 		},
 
-		selected: function(x, y, scale, duration) {
+		/*
+			移动与缩放
+			-----------------------------------
+			@x [number] 偏移量
+			@y [number] 偏移量
+			@scale [0.1 - 100] 放大系数 0.1 到 100
+			@duration [number] 动画时间
+		*/
+		transform: function(x, y, scale, duration) {
 			
 			duration = duration || 750;
 
@@ -322,34 +361,49 @@ SvgMind.prototype = {
 				d3.zoomIdentity.translate(x, y)
 				.scale(scale)
 			)
+		},
+
+		myZoom: function() {
+			// 设置缩放比例
+			this.zoom = d3.zoom()
+			.scaleExtent([0, 100])
+			.on('zoom', ()=> {
+				this.svgBody
+				.attr('transform', 'translate(' + d3.event.transform.x + ',' + d3.event.transform.y + ') scale(' + d3.event.transform.k + ')');
+			} );
+
+			this.svg.call( this.zoom);			
+		},
+
+		selectFn: function() {
+			let _classList = this.selected.join(',');
+			console.log(_classList)
+			if (this.option.selectedMode) {
+				d3.selectAll(_classList).classed('focus', true)
+			} else {
+				d3.select(_classList).classed('focus', true)
+			}
 		}
 	},
 
-	setOption: function(option) {
-
-		this.el = option.el;
-		this.data = option.data;
-		this.option = this.extendObj( this.option, option );
-
-
-		var clearType = this.getType();
-		var typeArr = clearType.typeArr;
-		this.linkArr = clearType.typeObj;
+	init: function(option) {
 
 		let _self = this;
+
+		this.option = this.extendObj( this.option, option );
+
+		_self.getType();
 
 		// 计算最多个数行
 		var maxTypeLength = Math.max.apply({}, (function() {
 			let _arr = [];
-			for (var i = 0, l = _self.linkArr.length; i < l; i++) {
-				_arr.push( _self.linkArr[i].length );
+			for (var i = 0, l = _self.pointArr.length; i < l; i++) {
+				_arr.push( _self.pointArr[i].length );
 			}
 			return _arr;
 		})());
 
-		var maxHeight = maxTypeLength * this.option.perHeight;
-		var maxWidth  = this.linkArr.length * this.option.perWidth;
-		this.svgBox = d3.select('#my-mind-box');
+		this.svgBox = d3.select( this.option.el );
 		this.svgW = parseInt( this.svgBox.style('width') );
 		this.svgH = parseInt( this.svgBox.style('height') );
 		this.circleR = option.circle.r;
@@ -359,22 +413,22 @@ SvgMind.prototype = {
 		.attr('height', this.svgH);
 
 		this.svgBody = this.svg.append('g');
+	},
+
+	setOption: function(option) {
+
+		this.init( option );
 
 		this.drawMarker();
 
 		this.drawPoint();
 
-		this.drawLine(this.data)
+		this.drawLine(this.option.data);
 
-		// 设置缩放比例
-		this.zoom = d3.zoom()
-		.scaleExtent([0, 100])
-		.on('zoom', ()=> {
-			this.svgBody
-			.attr('transform', 'translate(' + d3.event.transform.x + ',' + d3.event.transform.y + ') scale(' + d3.event.transform.k + ')');
-		} );
+		this.events.selectFn.call(this)
 
-		this.svg.call( this.zoom);
+		// 添加默认事件
+		this.events.myZoom.call(this)
 
 		// 拖动圆
 		// d3.selectAll('circle').call(d3.drag().on('start', started))
