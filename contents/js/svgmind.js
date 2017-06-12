@@ -1,4 +1,10 @@
+/*
+	SVG Mind
+	--------------------------------
+	v 0.1.0
 
+	支持 默认选择功能,多选单选可自由控制
+*/
 function SvgMind() {
 	// 绘制区
 	this.el = '';
@@ -38,6 +44,9 @@ function SvgMind() {
 }
 
 SvgMind.prototype = {
+	/*
+		基础版本 ajax
+	*/
 	ajax: function(option, callback) {
 		var xhr,
 			method = option.method || 'get',
@@ -56,6 +65,9 @@ SvgMind.prototype = {
 		xhr.send()		
 	},
 
+	/*
+		添加 json 合并功能
+	*/
 	extendObj: function(obj, obj2) {
 		let findObj = function(_obj, _obj2) {
 
@@ -98,15 +110,18 @@ SvgMind.prototype = {
 	},
 
 
-	// 获取每级的个数
+	/* 
+		获取每级的个数 
+	*/
 	getType: function() {
 	
 		let typeArrIndex = 0;
 
 		let doWith = (json, parentId) => {
 			for (let i = 0, l = json.length; i < l; i++) {
-				let _child = json[i].child;
-				let _id = json[i].id;
+				let _data = json[i];
+				let _child = _data.child;
+				let _id = _data.id;
 
 				if (json[i].select) {
 					this.selected.push( '#'+_id )
@@ -128,7 +143,7 @@ SvgMind.prototype = {
 					this.pointArr[typeArrIndex].push(_id);
 
 					this.pointPosition[_id] = {
-						_self: json[i],
+						_self: this.extendObj(this.option.data.data[_id], _data),
 						_parent: [ parentId ]
 					}
 
@@ -141,7 +156,7 @@ SvgMind.prototype = {
 			typeArrIndex--;
 		}
 
-		doWith( this.option.data );
+		doWith( this.option.data.line );
 
 	},
 
@@ -174,12 +189,6 @@ SvgMind.prototype = {
 					.attr('x2', childNodePoint.attr('cx'))
 					.attr('y2', childNodePoint.attr('cy'));
 
-					// lineBox.append('path')
-					// .attr('d', _self.diagonal(
-					// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
-					// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
-					// ))
-
 				}
 
 				_self.drawLine( n.child )
@@ -189,6 +198,9 @@ SvgMind.prototype = {
 		})
 	},
 
+	/*
+		添加文件
+	*/
 	drawText: function(ele, text, x, y) {
 		ele
 			.append('text')
@@ -325,21 +337,6 @@ SvgMind.prototype = {
 
 		_self: this,
 
-		dragstarted: (d) => {
-			d3.event.sourceEvent.stopPropagation();
-			d3.select(this).classed('dragging', true)
-		},
-
-		dragged: (d) => {
-			d3.select(this)
-			.attr('cx', d.x = d3.event.x)
-			.attr('cy', d.y = d3.event.y)
-		},
-
-		dragged: (d) => {
-			d3.select(this).classed('dragging', false)
-		},
-
 		/*
 			移动与缩放
 			-----------------------------------
@@ -377,7 +374,6 @@ SvgMind.prototype = {
 
 		selectFn: function() {
 			let _classList = this.selected.join(',');
-			console.log(_classList)
 			if (this.option.selectedMode) {
 				d3.selectAll(_classList).classed('focus', true)
 			} else {
@@ -423,30 +419,15 @@ SvgMind.prototype = {
 
 		this.drawPoint();
 
-		this.drawLine(this.option.data);
+		this.drawLine(this.option.data.line);
 
 		this.events.selectFn.call(this)
 
 		// 添加默认事件
 		this.events.myZoom.call(this)
 
-		// 拖动圆
-		// d3.selectAll('circle').call(d3.drag().on('start', started))
 	}
 }
 
-// function started() {
-  // var circle = d3.select(this).classed("dragging", true);
-
-  // d3.event.on("drag", dragged).on("end", ended);
-
-  // function dragged(d) {
-  //   circle.raise().attr("cx", d3.event.x).attr("cy", d3.event.y);
-  // }
-
-  // function ended() {
-  //   circle.classed("dragging", false);
-  // }
-// }
 
 
