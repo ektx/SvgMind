@@ -16,6 +16,15 @@ function SvgMind() {
 	this.selected = [];
 
 	this.option = {
+		/* 箭头方向 
+			left:  指向左 <
+			right: 指向右 >
+			none: 无
+		*/
+		arrow: {
+			start: "none",
+			end: "left"
+		},
 		// 每个点之间 y 轴距离
 		perHeight: 100,
 		// 每个点之间 x 轴距离
@@ -189,6 +198,11 @@ SvgMind.prototype = {
 					.attr('x2', childNodePoint.attr('cx'))
 					.attr('y2', childNodePoint.attr('cy'));
 
+					// lineBox.append('path')
+					// .attr('d', _self.diagonal(
+					// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
+					// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
+					// ))
 				}
 
 				_self.drawLine( n.child )
@@ -243,6 +257,18 @@ SvgMind.prototype = {
 
 		}
 
+		let addClassList = (classtag) => {
+
+			let _cls = 'nodes-point'
+
+			if (classtag) {
+				_cls += ' ' + classtag;
+			} 
+
+			return _cls;
+
+		}
+
 		for (let i = 0, l = linkArr.length; i < l; i++) {
 			
 			let colH = (linkArr[i].length -1) * _self.option.perHeight / 2;
@@ -269,15 +295,15 @@ SvgMind.prototype = {
 				}
 
 				// 保存点的位置
-				_self.pointPosition[ _thisID ]._self.x = x;
-				_self.pointPosition[ _thisID ]._self.y = y;
+				_thisInfo.x = x;
+				_thisInfo.y = y;
 				
 				let circleBox = _self.svgBody.append('g')
 				.attr('id', _thisID)
 				.classed('nodes-box', true)
 				
 				circleBox.append('circle')
-				.classed('nodes-point', true)
+				.attr('class', addClassList(_thisInfo.class))
 				.attr('r', _self.circleR)
 				.attr('cx', x)
 				.attr('cy', y)
@@ -336,6 +362,21 @@ SvgMind.prototype = {
 	events: {
 
 		_self: this,
+
+		dragstarted: (d) => {
+			d3.event.sourceEvent.stopPropagation();
+			d3.select(this).classed('dragging', true)
+		},
+
+		dragged: (d) => {
+			d3.select(this)
+			.attr('cx', d.x = d3.event.x)
+			.attr('cy', d.y = d3.event.y)
+		},
+
+		dragged: (d) => {
+			d3.select(this).classed('dragging', false)
+		},
 
 		/*
 			移动与缩放
@@ -426,8 +467,23 @@ SvgMind.prototype = {
 		// 添加默认事件
 		this.events.myZoom.call(this)
 
+		// 拖动圆
+		// d3.selectAll('circle').call(d3.drag().on('start', started))
+
 	}
 }
 
+// function started() {
+  // var circle = d3.select(this).classed("dragging", true);
 
+  // d3.event.on("drag", dragged).on("end", ended);
+
+  // function dragged(d) {
+  //   circle.raise().attr("cx", d3.event.x).attr("cy", d3.event.y);
+  // }
+
+  // function ended() {
+  //   circle.classed("dragging", false);
+  // }
+// }
 
