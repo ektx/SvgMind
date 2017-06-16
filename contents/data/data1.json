@@ -1,0 +1,127 @@
+{
+    "data": {
+        "A1501": {
+            "name": "A1501"
+        }, 
+        "A1001": {
+            "name": "A1001"
+        }, 
+        "B0001": {
+            "name": "B0001"
+        }, 
+        "C0001": {
+            "name": "C0001"
+        }, 
+        "D0001": {
+            "name": "D0001"
+        }, 
+        "E0001": {
+            "name": "E0001"
+        }, 
+        "E0002": {
+            "name": "E0002"
+        }, 
+        "A7001": {
+            "name": "A7001"
+        }, 
+        "A9001": {
+            "name": "A9001"
+        }, 
+        "A9501": {
+            "name": "A9501"
+        }, 
+        "D0002": {
+            "name": "D0002"
+        }, 
+        "D0004": {
+            "name": "D0004"
+        }, 
+        "A7002": {
+            "name": "A7002"
+        }, 
+        "A9002": {
+            "name": "A9002"
+        }
+    }, 
+    "line": [
+        {
+            "id": "A1001", 
+            "type": "solid", 
+            "child": [
+                {
+                    "id": "B0001", 
+                    "type": "solid"
+                }
+            ]
+        }, 
+        {
+            "id": "A1501", 
+            "type": "solid", 
+            "child": [
+                {
+                    "id": "B0001", 
+                    "type": "solid", 
+                    "child": [
+                        {
+                            "id": "C0001", 
+                            "type": "solid", 
+                            "select": true, 
+                            "child": [
+                                {
+                                    "id": "D0001", 
+                                    "type": "solid", 
+                                    "child": [
+                                        {
+                                            "id": "E0001", 
+                                            "type": "solid"
+                                        }, 
+                                        {
+                                            "id": "E0002", 
+                                            "type": "solid", 
+                                            "child": [
+                                                {
+                                                    "id": "A7001", 
+                                                    "type": "solid", 
+                                                    "child": [
+                                                        {
+                                                            "id": "A9001", 
+                                                            "type": "solid"
+                                                        }, 
+                                                        {
+                                                            "id": "A9501", 
+                                                            "type": "solid" 
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    "id": "D0002", 
+                                    "type": "solid", 
+                                    "child": [
+                                        {
+                                            "id": "A7002", 
+                                            "type": "solid", 
+                                            "child": [
+                                                {
+                                                    "id": "A9002", 
+                                                    "type": "solid"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    "id": "D0004", 
+                                    "type": "solid"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -279,12 +279,12 @@ SvgMind.prototype = {
 				// 得到自己的 id
 				let _thisID = linkArr[i][n];
 				let _thisInfo = _self.pointPosition[_thisID]._self;
-				let x = i * _self.option.perWidth + (_self.svgW/2) - colW;
+				let x = i * (_self.option.perWidth + _self.circleR)  + (_self.svgW/2) - colW;
 				let y = n * _self.option.perHeight + (_self.svgH/2) - colH;
 
 				if (i > 0) {
 					// 如果要让点与父级平行
-					if (_self.option.follow && linkArr[i].length <= linkArr[i -1].length) {
+					if (_self.option.follow && linkArr[i].length < linkArr[i -1].length) {
 						// 得到父级的信息
 						let _parentID = _self.pointPosition[_thisID]._parent;
 						let _parent = getParentOption(_parentID);
@@ -415,6 +415,9 @@ SvgMind.prototype = {
 
 		selectFn: function() {
 			let _classList = this.selected.join(',');
+			
+			if (!_classList) return;
+
 			if (this.option.selectedMode) {
 				d3.selectAll(_classList).classed('focus', true)
 			} else {
