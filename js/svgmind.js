@@ -1,7 +1,7 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.1.0
+	v 0.2.0
 
 	支持 默认选择功能,多选单选可自由控制
 */
@@ -47,6 +47,11 @@ function SvgMind() {
 			textAnchor: 'middle',
 			dy: 0,
 			dx: 0
+		},
+
+		events: {
+			zoom: null, // 缩放时的事件
+			zoomEnd: null // 缩放结束时事件
 		}
 	}
 
@@ -279,12 +284,12 @@ SvgMind.prototype = {
 				// 得到自己的 id
 				let _thisID = linkArr[i][n];
 				let _thisInfo = _self.pointPosition[_thisID]._self;
-				let x = i * (_self.option.perWidth + _self.circleR)  + (_self.svgW/2) - colW;
+				let x = i * _self.option.perWidth + (_self.svgW/2) - colW;
 				let y = n * _self.option.perHeight + (_self.svgH/2) - colH;
 
 				if (i > 0) {
 					// 如果要让点与父级平行
-					if (_self.option.follow && linkArr[i].length < linkArr[i -1].length) {
+					if (_self.option.follow && linkArr[i].length <= linkArr[i -1].length) {
 						// 得到父级的信息
 						let _parentID = _self.pointPosition[_thisID]._parent;
 						let _parent = getParentOption(_parentID);
@@ -385,6 +390,9 @@ SvgMind.prototype = {
 			@y [number] 偏移量
 			@scale [0.1 - 100] 放大系数 0.1 到 100
 			@duration [number] 动画时间
+
+			外部调用一:
+			mymind.events.transform.call(mymind, 0,0,1)
 		*/
 		transform: function(x, y, scale, duration) {
 			
@@ -408,16 +416,24 @@ SvgMind.prototype = {
 			.on('zoom', ()=> {
 				this.svgBody
 				.attr('transform', 'translate(' + d3.event.transform.x + ',' + d3.event.transform.y + ') scale(' + d3.event.transform.k + ')');
-			} );
+
+			} )
+			.on('end', ()=> {
+				this.zoomScale = d3.event.transform.k;
+
+				if (this.option.events.zoomEnd) {
+					if (typeof this.option.events.zoomEnd == 'function') {
+						this.option.events.zoomEnd(d3.event.transform.k)
+					}
+				}
+			});
+
 
 			this.svg.call( this.zoom);			
 		},
 
 		selectFn: function() {
 			let _classList = this.selected.join(',');
-			
-			if (!_classList) return;
-
 			if (this.option.selectedMode) {
 				d3.selectAll(_classList).classed('focus', true)
 			} else {
