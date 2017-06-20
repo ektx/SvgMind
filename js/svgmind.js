@@ -1,7 +1,7 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.2.0
+	v 0.2.1
 
 	支持 默认选择功能,多选单选可自由控制
 */
@@ -433,11 +433,15 @@ SvgMind.prototype = {
 		},
 
 		selectFn: function() {
-			let _classList = this.selected.join(',');
-			if (this.option.selectedMode) {
-				d3.selectAll(_classList).classed('focus', true)
-			} else {
-				d3.select(_classList).classed('focus', true)
+
+			if (this.selected.length > 0) {
+				
+				let _classList = this.selected.join(',');
+				if (this.option.selectedMode) {
+					d3.selectAll(_classList).classed('focus', true)
+				} else {
+					d3.select(_classList).classed('focus', true)
+				}
 			}
 		}
 	},

@@ -74,3 +74,25 @@ line.end-solid-arrow {
 	stroke: #ddd;
 	fill: transparent;
 }
+
+footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(255, 255, 255, .6);
+	line-height: 10vh;
+	font-size: 24px;
+	text-align: center;
+	user-select: none;
+	cursor: pointer;
+	opacity: 0;
+	visibility: hidden;
+}
+footer:hover {
+	color: #09f;
+}
+footer.show {
+	visibility: visible;
+	opacity: 1;
+}

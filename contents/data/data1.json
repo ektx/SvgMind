@@ -78,6 +78,7 @@
                                         {
                                             "id": "E0002", 
                                             "type": "solid", 
+                                            "select": true, 
                                             "child": [
                                                 {
                                                     "id": "A7001", 
