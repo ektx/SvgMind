@@ -289,7 +289,7 @@ SvgMind.prototype = {
 
 				if (i > 0) {
 					// 如果要让点与父级平行
-					if (_self.option.follow && linkArr[i].length <= linkArr[i -1].length) {
+					if (_self.option.follow && linkArr[i].length < linkArr[i -1].length) {
 						// 得到父级的信息
 						let _parentID = _self.pointPosition[_thisID]._parent;
 						let _parent = getParentOption(_parentID);
