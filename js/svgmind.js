@@ -313,7 +313,10 @@ class SvgMind {
 			let textR = text.replace(/[^\x00-\xff]/g, '❤❤');
 			if (textR.length > setTxtL) {
 				if (textR.slice(setTxtL, setTxtL+1) == '❤') {
-					text = text.slice(0, setTxtL-1)+'...'
+					let _t = textR.slice(0, setTxtL);
+					let xinL = _t.match(/❤/g).length;
+					let _tL = _t.length - xinL;
+					text = text.slice(0, _tL + Math.floor(xinL/2))+'...'
 				} else {
 					text = text.slice(0, setTxtL)+'...'
 				}
