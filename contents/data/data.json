@@ -59,6 +59,7 @@
 								{
 									"type": "dotted",
 									"id": "d001",
+									"class": "ok hello",
 									"child": [
 										{
 											"type": "solid",

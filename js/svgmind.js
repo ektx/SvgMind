@@ -1,53 +1,153 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.1.0
+	v 0.3.1
 
 	支持 默认选择功能,多选单选可自由控制
 */
-function SvgMind() {
-	// 绘制区
-	this.el = '';
-	// 记录点的位置
-	this.pointPosition = {};
-	// 记录点的数组
-	this.pointArr = [];
-	// 选择功能
-	this.selected = [];
+class SvgMind {
 
-	this.option = {
-		// 每个点之间 y 轴距离
-		perHeight: 100,
-		// 每个点之间 x 轴距离
-		perWidth: 200,
-		// 与父级相持平行,只有在自己的个数比父级的个数少时起用
-		follow: true,
-		// 圆的属性
-		circle: {
-			// 半径
-			r: 12
-		},
-		// 是否支持多选, true 多选择 false 单选
-		selectedMode: false,
-		line: {
-			refX: 0,
-			refY: 0
-		},
-		text: {
-			// start | middle | end 
-			textAnchor: 'middle',
-			dy: 0,
-			dx: 0
+	constructor() {
+		// 绘制区
+		this.el = '';
+		// 记录点的位置
+		this.pointPosition = {};
+		// 记录点的数组
+		this.pointArr = [];
+		// 选择功能
+		this.selected = [];
+		
+		this.events = {
+
+			dragstarted: (d) => {
+				d3.event.sourceEvent.stopPropagation();
+				d3.select(this).classed('dragging', true)
+			},
+
+			dragged: (d) => {
+				d3.select(this)
+				.attr('cx', d.x = d3.event.x)
+				.attr('cy', d.y = d3.event.y)
+			},
+
+			dragged: (d) => {
+				d3.select(this).classed('dragging', false)
+			},
+
+			/*
+				移动与缩放
+				-----------------------------------
+				@x [number] 偏移量
+				@y [number] 偏移量
+				@scale [0.1 - 100] 放大系数 0.1 到 100
+				@duration [number] 动画时间
+
+				外部调用一:
+				mymind.events.transform.call(mymind, 0,0,1)
+			*/
+			transform: function(x, y, scale, duration) {
+				
+				duration = duration || 750;
+
+				if (scale == 0) scale = 1;
+
+				this.svg.transition()
+				.duration(duration)
+				.call(
+					this.zoom.transform, 
+					d3.zoomIdentity.translate(x, y)
+					.scale(scale)
+				)
+			},
+
+			myZoom: function() {
+				// 设置缩放比例
+				this.zoom = d3.zoom()
+				.scaleExtent([0, 100])
+				.on('zoom', ()=> {
+					this.svgBody
+					.attr('transform', 'translate(' + d3.event.transform.x + ',' + d3.event.transform.y + ') scale(' + d3.event.transform.k + ')');
+
+				} )
+				.on('end', ()=> {
+					this.zoomScale = d3.event.transform.k;
+
+					if (this.option.events.zoomEnd) {
+						if (typeof this.option.events.zoomEnd == 'function') {
+							this.option.events.zoomEnd(d3.event.transform.k)
+						}
+					}
+				});
+
+
+				this.svg.call( this.zoom);			
+			},
+
+			selectFn: function() {
+
+				if (this.selected.length > 0) {
+					
+					let _classList = this.selected.join(',');
+					if (this.option.selectedMode) {
+						d3.selectAll(_classList).classed('focus', true)
+					} else {
+						d3.select(_classList).classed('focus', true)
+					}
+				}
+			}
+		}
+
+
+		this.option = {
+			/* 箭头方向 
+				left:  指向左 <
+				right: 指向右 >
+				none: 无
+			*/
+			arrow: {
+				start: "none",
+				end: "left"
+			},
+			// 每个点之间 y 轴距离
+			perHeight: 100,
+			// 每个点之间 x 轴距离
+			perWidth: 200,
+			// 与父级相持平行,只有在自己的个数比父级的个数少时起用
+			follow: true,
+			// 圆的属性
+			circle: {
+				// 半径
+				r: 12
+			},
+			// 是否支持多选, true 多选择 false 单选
+			selectedMode: false,
+			// 连线属性
+			line: {
+				// 箭头的x轴偏移
+				refX: 0,
+				// 箭头的y轴偏移
+				refY: 0
+			},
+			text: {
+				// 文字位置 start | middle | end 
+				textAnchor: 'middle',
+				dy: 0,
+				dx: 0,
+				// 设置文字长度 false 为不限,取值为大于0
+				length: false
+			},
+
+			events: {
+				zoom: null, // 缩放时的事件
+				zoomEnd: null // 缩放结束时事件
+			}
 		}
 	}
 
-}
-
-SvgMind.prototype = {
 	/*
 		基础版本 ajax
 	*/
-	ajax: function(option, callback) {
+	ajax(option, callback) {
 		var xhr,
 			method = option.method || 'get',
 			url = option.url || false;
@@ -63,12 +163,12 @@ SvgMind.prototype = {
 		}
 
 		xhr.send()		
-	},
+	}
 
 	/*
 		添加 json 合并功能
 	*/
-	extendObj: function(obj, obj2) {
+	extendObj(obj, obj2) {
 		let findObj = function(_obj, _obj2) {
 
 			for (let key in _obj2) {
@@ -94,10 +194,10 @@ SvgMind.prototype = {
 
 
 		return findObj(obj, obj2)	
-	},
+	}
 
 	// 绘制贝塞尔曲线
-	diagonal: function(s, t) {
+	diagonal(s, t) {
 		s.y = parseFloat(s.y);
 		s.x = parseFloat(s.x);
 		t.y = parseFloat(t.y);
@@ -107,13 +207,13 @@ SvgMind.prototype = {
 		+ 'C' + (s.y + t.y) /2 + ',' + s.x
 		+ ' ' + (s.y + t.y) /2 + ',' + t.x
 		+ ' ' + t.x +',' + t.y;
-	},
+	}
 
 
 	/* 
 		获取每级的个数 
 	*/
-	getType: function() {
+	getType() {
 	
 		let typeArrIndex = 0;
 
@@ -158,10 +258,10 @@ SvgMind.prototype = {
 
 		doWith( this.option.data.line );
 
-	},
+	}
 
 	// 绘制线
-	drawLine: function(json) {
+	drawLine(json) {
 
 		let _self = this;
 
@@ -189,6 +289,11 @@ SvgMind.prototype = {
 					.attr('x2', childNodePoint.attr('cx'))
 					.attr('y2', childNodePoint.attr('cy'));
 
+					// lineBox.append('path')
+					// .attr('d', _self.diagonal(
+					// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
+					// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
+					// ))
 				}
 
 				_self.drawLine( n.child )
@@ -196,12 +301,31 @@ SvgMind.prototype = {
 			}
 
 		})
-	},
+	}
 
 	/*
 		添加文件
 	*/
-	drawText: function(ele, text, x, y) {
+	drawText(ele, text, x, y) {
+
+		let setTxtL = this.option.text.length;
+
+		ele.append('title').text(text)
+
+		if (setTxtL) {
+			let textR = text.replace(/[^\x00-\xff]/g, '❤❤');
+			if (textR.length > setTxtL) {
+				if (textR.slice(setTxtL, setTxtL+1) == '❤') {
+					let _t = textR.slice(0, setTxtL);
+					let xinL = _t.match(/❤/g).length;
+					let _tL = _t.length - xinL;
+					text = text.slice(0, _tL + Math.floor(xinL/2))+'...'
+				} else {
+					text = text.slice(0, setTxtL)+'...'
+				}
+			}
+		}
+
 		ele
 			.append('text')
 			.text( text )
@@ -210,10 +334,10 @@ SvgMind.prototype = {
 			.attr('y', y)
 			.attr('dy', this.option.text.dy)
 			.attr('dx', this.option.text.dx)
-	},
+	}
 
 	// 绘制点
-	drawPoint: function() {
+	drawPoint() {
 
 		let _self = this;
 		let linkArr = _self.pointArr;
@@ -243,6 +367,18 @@ SvgMind.prototype = {
 
 		}
 
+		let addClassList = (classtag) => {
+
+			let _cls = 'nodes-point'
+
+			if (classtag) {
+				_cls += ' ' + classtag;
+			} 
+
+			return _cls;
+
+		}
+
 		for (let i = 0, l = linkArr.length; i < l; i++) {
 			
 			let colH = (linkArr[i].length -1) * _self.option.perHeight / 2;
@@ -258,7 +394,7 @@ SvgMind.prototype = {
 
 				if (i > 0) {
 					// 如果要让点与父级平行
-					if (_self.option.follow && linkArr[i].length <= linkArr[i -1].length) {
+					if (_self.option.follow && linkArr[i].length < linkArr[i -1].length) {
 						// 得到父级的信息
 						let _parentID = _self.pointPosition[_thisID]._parent;
 						let _parent = getParentOption(_parentID);
@@ -269,15 +405,15 @@ SvgMind.prototype = {
 				}
 
 				// 保存点的位置
-				_self.pointPosition[ _thisID ]._self.x = x;
-				_self.pointPosition[ _thisID ]._self.y = y;
+				_thisInfo.x = x;
+				_thisInfo.y = y;
 				
 				let circleBox = _self.svgBody.append('g')
 				.attr('id', _thisID)
 				.classed('nodes-box', true)
 				
 				circleBox.append('circle')
-				.classed('nodes-point', true)
+				.attr('class', addClassList(_thisInfo.class))
 				.attr('r', _self.circleR)
 				.attr('cx', x)
 				.attr('cy', y)
@@ -306,10 +442,10 @@ SvgMind.prototype = {
 
 			}
 		};
-	},
+	}
 
 	// 绘制 marker
-	drawMarker: function() {
+	drawMarker() {
 
 		let markerBox = this.svgBody.append('svg:defs');
 		let arrowArr = ['end-arrow', 'end-hover-arrow','end-focus-arrow','start-arrow', 'start-hover-arrow']
@@ -331,58 +467,9 @@ SvgMind.prototype = {
 			.append('svg:path')
 			.attr('d', 'M0,-5L10,0L0,5')
 		}
-	},
+	}
 
-	events: {
-
-		_self: this,
-
-		/*
-			移动与缩放
-			-----------------------------------
-			@x [number] 偏移量
-			@y [number] 偏移量
-			@scale [0.1 - 100] 放大系数 0.1 到 100
-			@duration [number] 动画时间
-		*/
-		transform: function(x, y, scale, duration) {
-			
-			duration = duration || 750;
-
-			if (scale == 0) scale = 1;
-
-			this.svg.transition()
-			.duration(duration)
-			.call(
-				this.zoom.transform, 
-				d3.zoomIdentity.translate(x, y)
-				.scale(scale)
-			)
-		},
-
-		myZoom: function() {
-			// 设置缩放比例
-			this.zoom = d3.zoom()
-			.scaleExtent([0, 100])
-			.on('zoom', ()=> {
-				this.svgBody
-				.attr('transform', 'translate(' + d3.event.transform.x + ',' + d3.event.transform.y + ') scale(' + d3.event.transform.k + ')');
-			} );
-
-			this.svg.call( this.zoom);			
-		},
-
-		selectFn: function() {
-			let _classList = this.selected.join(',');
-			if (this.option.selectedMode) {
-				d3.selectAll(_classList).classed('focus', true)
-			} else {
-				d3.select(_classList).classed('focus', true)
-			}
-		}
-	},
-
-	init: function(option) {
+	init(option) {
 
 		let _self = this;
 
@@ -409,9 +496,9 @@ SvgMind.prototype = {
 		.attr('height', this.svgH);
 
 		this.svgBody = this.svg.append('g');
-	},
+	}
 
-	setOption: function(option) {
+	setOption(option) {
 
 		this.init( option );
 
@@ -426,8 +513,23 @@ SvgMind.prototype = {
 		// 添加默认事件
 		this.events.myZoom.call(this)
 
+		// 拖动圆
+		// d3.selectAll('circle').call(d3.drag().on('start', started))
+
 	}
 }
 
+// function started() {
+  // var circle = d3.select(this).classed("dragging", true);
 
+  // d3.event.on("drag", dragged).on("end", ended);
+
+  // function dragged(d) {
+  //   circle.raise().attr("cx", d3.event.x).attr("cy", d3.event.y);
+  // }
+
+  // function ended() {
+  //   circle.classed("dragging", false);
+  // }
+// }
 

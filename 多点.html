@@ -11,14 +11,16 @@
 <body>
 	<section id="my-mind-box"></section>
 
+	<footer>重置</footer>
+
 	<script src="contents/d3/d3.min.js"></script>
-	<script src="js/svgmind.js"></script>
+	<script src="js/svgmind.es5.js"></script>
 	<script>
 		var mymind = new SvgMind();
 		
 		mymind.ajax({
 			url: 'contents/data/data1.json'
-		}, (data) => {
+		}, function(data) {
 
 			var option = {
 				el: '#my-mind-box',
@@ -35,11 +37,25 @@
 				},
 				text: {
 					dy: '2.5em',
-					dx: '0em'
+					dx: '0em',
+					length: 4
+				},
+				events: {
+					zoomEnd: function(scale) {
+						if (scale !== 1) {
+							document.querySelector('footer').classList.add('show')
+						} else {
+							document.querySelector('footer').classList.remove('show')
+						}
+					}
 				}
 			}
 			mymind.setOption(option);
 		});
+
+		document.querySelector('footer').addEventListener('click', function() {
+			mymind.events.transform.call(mymind, 0, 0, 1)
+		})
 	</script>
 </body>
 </html>

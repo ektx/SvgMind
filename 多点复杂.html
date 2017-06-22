@@ -15,21 +15,23 @@
 	<script src="js/svgmind.js"></script>
 	<script>
 		var mymind = new SvgMind();
+		var json = '';
 		
 		mymind.ajax({
 			url: 'contents/data/data1.json'
 		}, (data) => {
+			json = data;
 
 			var option = {
 				el: '#my-mind-box',
-				data: data,
+				data: json,
 				perHeight: 100,
 				perWidth: 200,
 				circle: {
 					r: 12
 				},
 				// 是否支持多选, true 多选择 false 单选
-				selectedMode: false,
+				selectedMode: true,
 				line: {
 					refX: 20
 				},
