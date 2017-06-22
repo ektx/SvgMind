@@ -121,12 +121,15 @@ class SvgMind {
 			},
 			// 是否支持多选, true 多选择 false 单选
 			selectedMode: false,
+			// 连线属性
 			line: {
+				// 箭头的x轴偏移
 				refX: 0,
+				// 箭头的y轴偏移
 				refY: 0
 			},
 			text: {
-				// start | middle | end 
+				// 文字位置 start | middle | end 
 				textAnchor: 'middle',
 				dy: 0,
 				dx: 0,

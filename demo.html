@@ -15,16 +15,14 @@
 	<script src="js/svgmind.js"></script>
 	<script>
 		var mymind = new SvgMind();
-		var json = '';
 		
 		mymind.ajax({
 			url: 'contents/data/data1.json'
 		}, (data) => {
-			json = data;
 
 			var option = {
 				el: '#my-mind-box',
-				data: json,
+				data: data,
 				perHeight: 100,
 				perWidth: 200,
 				circle: {

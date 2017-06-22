@@ -14,19 +14,17 @@
 	<footer>重置</footer>
 
 	<script src="contents/d3/d3.min.js"></script>
-	<script src="js/svgmind.js"></script>
+	<script src="js/svgmind.es5.js"></script>
 	<script>
 		var mymind = new SvgMind();
-		var json = '';
 		
 		mymind.ajax({
 			url: 'contents/data/data1.json'
-		}, (data) => {
-			json = data;
+		}, function(data) {
 
 			var option = {
 				el: '#my-mind-box',
-				data: json,
+				data: data,
 				perHeight: 100,
 				perWidth: 200,
 				circle: {
@@ -43,7 +41,7 @@
 					length: 4
 				},
 				events: {
-					zoomEnd: (scale) => {
+					zoomEnd: function(scale) {
 						if (scale !== 1) {
 							document.querySelector('footer').classList.add('show')
 						} else {
