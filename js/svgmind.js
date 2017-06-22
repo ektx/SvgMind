@@ -131,7 +131,9 @@ class SvgMind {
 			text: {
 				// 文字位置 start | middle | end 
 				textAnchor: 'middle',
+				// 文字的y轴偏移
 				dy: 0,
+				// 文字的x轴偏移
 				dx: 0,
 				// 设置文字长度 false 为不限,取值为大于0
 				length: false
