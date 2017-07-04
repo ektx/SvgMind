@@ -1,7 +1,7 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.3.1
+	v 0.4.0
 
 	支持 默认选择功能,多选单选可自由控制
 */
@@ -119,7 +119,7 @@ class SvgMind {
 				// 半径
 				r: 12
 			},
-			// 是否支持多选, true 多选择 false 单选
+			// 是否支持多选, true 多选择 false 单选, -1 不可以选择
 			selectedMode: false,
 			// 连线属性
 			line: {
@@ -426,6 +426,9 @@ class SvgMind {
 					d3.select(this.previousSibling).classed('hover', false)
 				})
 				.on('click', function() {
+					
+					if (_self.option.selectedMode < 0) return;
+
 					let className = 'focus';
 					let _this = d3.select(this);
 
@@ -510,6 +513,7 @@ class SvgMind {
 
 		this.drawLine(this.option.data.line);
 
+		// 默认选择效果
 		this.events.selectFn.call(this)
 
 		// 添加默认事件
