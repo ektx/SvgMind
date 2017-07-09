@@ -272,49 +272,20 @@ class SvgMind {
 				.attr('y1', rootData[id].position.y)
 				.attr('x2', rootData[innerNode].position.x)
 				.attr('y2', rootData[innerNode].position.y);
+
+				// lineBox.append('path')
+				// .attr('d', _self.diagonal(
+				// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
+				// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
+				// ))
 			}
 		}
 
 		for (let node in rootData) {
 			let nodeL = rootData[node].lineTo ? Object.keys(rootData[node].lineTo).length : 0;
-			if (nodeL > 0) {
-					svgLineTo(rootData[node].id)
-			}
+			if (nodeL > 0) svgLineTo(rootData[node].id)
 		}
 
-		// json.forEach(function(n,i) {
-
-		// 	let thisPoint = d3.select('#'+n.id+' .nodes-point')
-
-		// 	if (n.child) {
-				
-
-		// 		// 生成线
-		// 		for (let i = 0, l = n.child.length; i < l; i++) {
-		// 			let childNodePoint = d3.select('#'+n.child[i].id+' .nodes-point');
-
-		// 			lineBox.append('line')
-		// 			// 添加箭头
-		// 			.classed('end-solid-arrow', true)
-		// 			// 添加线的属性
-		// 			.classed(`${n.child[i].type}-line`, true) 
-		// 			.attr('x1', thisPoint.attr('cx'))
-		// 			.attr('y1', thisPoint.attr('cy'))
-		// 			.attr('x2', childNodePoint.attr('cx'))
-		// 			.attr('y2', childNodePoint.attr('cy'));
-
-		// 			// lineBox.append('path')
-		// 			// .attr('d', _self.diagonal(
-		// 			// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
-		// 			// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
-		// 			// ))
-		// 		}
-
-		// 		_self.drawLine( n.child )
-
-		// 	}
-
-		// })
 	}
 
 	/*
