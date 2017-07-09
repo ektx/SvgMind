@@ -27,7 +27,6 @@
 				circle: {
 					r: 12
 				},
-				// 是否支持多选, true 多选择 false 单选
 				selectedMode: false,
 				line: {
 					refX: 20
