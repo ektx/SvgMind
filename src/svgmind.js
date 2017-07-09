@@ -99,7 +99,7 @@ class SvgMind {
 
 
 		this.option = {
-			/* 箭头方向 
+			/* 箭头方向  *
 				left:  指向左 <
 				right: 指向右 >
 				none: 无
@@ -112,14 +112,12 @@ class SvgMind {
 			perHeight: 100,
 			// 每个点之间 x 轴距离
 			perWidth: 200,
-			// 与父级相持平行,只有在自己的个数比父级的个数少时起用
-			follow: true,
 			// 圆的属性
 			circle: {
 				// 半径
 				r: 12
 			},
-			// 是否支持选中, multiple 多选择; single 单选, false 不可以选择
+			// 是否支持选中, multiple 多选择; single 单选, false 不可以选择(默认)
 			selectedMode: false,
 			// 连线属性
 			line: {
@@ -139,7 +137,7 @@ class SvgMind {
 				length: false
 			},
 
-			// 大小窗口
+			// 大小窗口*
 			autoWindows: true, 
 
 			events: {
@@ -243,6 +241,8 @@ class SvgMind {
 		}
 
 		_.pointArr.shift();
+
+		_.pointArr = _.pointArr.filter(n => n)
 
 	}
 
@@ -380,18 +380,6 @@ class SvgMind {
 				let _thisInfo = _thisPoint.position;
 				let x = i * _self.option.perWidth + (_self.svgW/2) - colW;
 				let y = n * _self.option.perHeight + (_self.svgH/2) - colH;
-
-				// if (i > 0) {
-				// 	// 如果要让点与父级平行
-				// 	// if (_self.option.follow && linkArr[i].length < linkArr[i -1].length) {
-				// 	// 	// 得到父级的信息
-				// 	// 	let _parentID = _thisPoint.id._parent;
-				// 	// 	let _parent = getParentOption(_parentID);
-
-				// 	// 	x = _parent.x + _self.option.perWidth;
-				// 	// 	y = _parent.y;
-				// 	// } 
-				// }
 
 				// 保存点的位置
 				_thisInfo.x = x;

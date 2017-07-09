@@ -12,17 +12,19 @@
 	<section id="my-mind-box"></section>
 
 	<script src="contents/d3/d3.min.js"></script>
-	<script src="js/svgmind.js"></script>
+	<script src="../src/svgmind.js"></script>
 	<script>
 		var mymind = new SvgMind();
+		var json = '';
 		
 		mymind.ajax({
-			url: 'contents/data/data1.json'
+			url: 'contents/data/single.json'
 		}, (data) => {
+			json = data;
 
 			var option = {
 				el: '#my-mind-box',
-				data: data,
+				data: json,
 				perHeight: 100,
 				perWidth: 200,
 				circle: {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>SVG Mind</title>
+	<title>跨级效果 - SVG Mind</title>
 
 	<link rel="stylesheet" href="contents/css/reset-1.3.3.css">
 	<link rel="stylesheet" href="contents/css/svgmind.css">
@@ -14,12 +14,15 @@
 	<footer>重置</footer>
 
 	<script src="contents/d3/d3.min.js"></script>
-	<script src="js/svgmind.js"></script>
+	<script src="../src/svgmind.js"></script>
 	<script>
+	/*
+		此 demo 中的点与线,使用的是父级的 lineTo
+	*/
 		var mymind = new SvgMind();
 		
 		mymind.ajax({
-			url: 'contents/data/data1.json'
+			url: 'contents/data/crossLevel.json'
 		}, function(data) {
 
 			var option = {
@@ -30,14 +33,14 @@
 				circle: {
 					r: 12
 				},
+				// 单选
 				selectedMode: 'single',
 				line: {
 					refX: 20
 				},
 				text: {
 					dy: '2.5em',
-					dx: '0em',
-					length: 4
+					dx: '0em'
 				},
 				events: {
 					zoomEnd: function(scale) {
