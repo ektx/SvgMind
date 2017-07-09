@@ -1,7 +1,7 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.4.0
+	v 0.5.0
 
 	支持 默认选择功能,多选单选可自由控制
 */
@@ -88,7 +88,7 @@ class SvgMind {
 				if (this.selected.length > 0) {
 					
 					let _classList = this.selected.join(',');
-					if (this.option.selectedMode) {
+					if (this.option.selectedMode === 'multiple') {
 						d3.selectAll(_classList).classed('focus', true)
 					} else {
 						d3.select(_classList).classed('focus', true)
@@ -99,7 +99,7 @@ class SvgMind {
 
 
 		this.option = {
-			/* 箭头方向 
+			/* 箭头方向  *
 				left:  指向左 <
 				right: 指向右 >
 				none: 无
@@ -112,14 +112,12 @@ class SvgMind {
 			perHeight: 100,
 			// 每个点之间 x 轴距离
 			perWidth: 200,
-			// 与父级相持平行,只有在自己的个数比父级的个数少时起用
-			follow: true,
 			// 圆的属性
 			circle: {
 				// 半径
 				r: 12
 			},
-			// 是否支持多选, true 多选择 false 单选, -1 不可以选择
+			// 是否支持选中, multiple 多选择; single 单选, false 不可以选择(默认)
 			selectedMode: false,
 			// 连线属性
 			line: {
@@ -138,6 +136,9 @@ class SvgMind {
 				// 设置文字长度 false 为不限,取值为大于0
 				length: false
 			},
+
+			// 大小窗口*
+			autoWindows: true, 
 
 			events: {
 				zoom: null, // 缩放时的事件
@@ -216,93 +217,104 @@ class SvgMind {
 		获取每级的个数 
 	*/
 	getType() {
-	
-		let typeArrIndex = 0;
 
-		let doWith = (json, parentId) => {
-			for (let i = 0, l = json.length; i < l; i++) {
-				let _data = json[i];
-				let _child = _data.child;
-				let _id = _data.id;
+		let _ = this;
+		let data = _.option.data.data;
 
-				if (json[i].select) {
-					this.selected.push( '#'+_id )
-				}
+		for ( let val in data) {
 
-				if (_child) {
-					typeArrIndex++;
-					doWith( _child, _id )
-				}
+			let _thisArr = data[val];
 
-				// 生成数组
-				if (!this.pointArr[typeArrIndex]) {
-					this.pointArr[typeArrIndex] = []
-				}
-
-				// 判断是否已经存在
-				if (!(_id in this.pointPosition)) {
-
-					this.pointArr[typeArrIndex].push(_id);
-
-					this.pointPosition[_id] = {
-						_self: this.extendObj(this.option.data.data[_id], _data),
-						_parent: [ parentId ]
-					}
-
-				} else {
-					// 追加父级信息
-					this.pointPosition[_id]._parent.push( parentId )
-				}
+			if(! _.pointArr[ parseInt(data[val].level) ] ) {
+				_.pointArr[ parseInt(data[val].level) ] = []
 			}
 
-			typeArrIndex--;
+			data[val].id = val;
+			data[val].position = {
+				x: 0,
+				y: 0
+			};
+
+			if (data[val].selected) _.selected.push('#'+val);
+
+			_.pointArr[ parseInt(data[val].level) ].push( data[val] )
 		}
 
-		doWith( this.option.data.line );
+		_.pointArr.shift();
+
+		_.pointArr = _.pointArr.filter(n => n)
 
 	}
 
 	// 绘制线
-	drawLine(json) {
+	drawLine() {
 
 		let _self = this;
 
-		json.forEach(function(n,i) {
+		let rootData = _self.option.data.data;
 
-			let thisPoint = d3.select('#'+n.id+' .nodes-point')
+		let svgLineTo = (id) => {
+			// 1.在当前点区域添加线存放区域
+			let lineBox = d3.select('#'+id)
+			.insert('g', '.nodes-point')
+			.classed('node-line-box', true);
 
-			if (n.child) {
-				
-				let lineBox = d3.select('#'+n.id)
-				.insert('g', '.nodes-point')
-				.classed('node-line-box', true);
 
-				// 生成线
-				for (let i = 0, l = n.child.length; i < l; i++) {
-					let childNodePoint = d3.select('#'+n.child[i].id+' .nodes-point');
+			for (let innerNode in rootData[id].lineTo) {
 
-					lineBox.append('line')
-					// 添加箭头
-					.classed('end-solid-arrow', true)
-					// 添加线的属性
-					.classed(`${n.child[i].type}-line`, true) 
-					.attr('x1', thisPoint.attr('cx'))
-					.attr('y1', thisPoint.attr('cy'))
-					.attr('x2', childNodePoint.attr('cx'))
-					.attr('y2', childNodePoint.attr('cy'));
-
-					// lineBox.append('path')
-					// .attr('d', _self.diagonal(
-					// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
-					// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
-					// ))
-				}
-
-				_self.drawLine( n.child )
-
+				// 2.添加线
+				lineBox.append('line')
+				// 添加箭头
+				.classed('end-solid-arrow', true)
+				// 添加线的属性
+				.classed(`${rootData[id].lineTo[innerNode]}-line`, true) 
+				.attr('x1', rootData[id].position.x)
+				.attr('y1', rootData[id].position.y)
+				.attr('x2', rootData[innerNode].position.x)
+				.attr('y2', rootData[innerNode].position.y);
 			}
+		}
 
-		})
+		for (let node in rootData) {
+			let nodeL = rootData[node].lineTo ? Object.keys(rootData[node].lineTo).length : 0;
+			if (nodeL > 0) {
+					svgLineTo(rootData[node].id)
+			}
+		}
+
+		// json.forEach(function(n,i) {
+
+		// 	let thisPoint = d3.select('#'+n.id+' .nodes-point')
+
+		// 	if (n.child) {
+				
+
+		// 		// 生成线
+		// 		for (let i = 0, l = n.child.length; i < l; i++) {
+		// 			let childNodePoint = d3.select('#'+n.child[i].id+' .nodes-point');
+
+		// 			lineBox.append('line')
+		// 			// 添加箭头
+		// 			.classed('end-solid-arrow', true)
+		// 			// 添加线的属性
+		// 			.classed(`${n.child[i].type}-line`, true) 
+		// 			.attr('x1', thisPoint.attr('cx'))
+		// 			.attr('y1', thisPoint.attr('cy'))
+		// 			.attr('x2', childNodePoint.attr('cx'))
+		// 			.attr('y2', childNodePoint.attr('cy'));
+
+		// 			// lineBox.append('path')
+		// 			// .attr('d', _self.diagonal(
+		// 			// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
+		// 			// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
+		// 			// ))
+		// 		}
+
+		// 		_self.drawLine( n.child )
+
+		// 	}
+
+		// })
 	}
 
 	/*
@@ -344,31 +356,6 @@ class SvgMind {
 		let _self = this;
 		let linkArr = _self.pointArr;
 
-		// 取x, y
-		let getParentOption = (parentArr) => {
-			let xArr = [];
-			let yArr = [];
-
-			for (let i = 0, l = parentArr.length; i < l; i++) {
-				let _parent = _self.pointPosition[parentArr[i]]._self;
-
-				xArr.push( _parent.x );
-				yArr.push( _parent.y );
-			}
-
-			let xMax = Math.max.apply({}, xArr);
-			let xMin = Math.min.apply({}, xArr);
-
-			let yMax = Math.max.apply({}, yArr);
-			let yMin = Math.min.apply({}, yArr);
-
-			return {
-				x: (xMax - xMin) / 2 + xMin,
-				y: (yMax - yMin) / 2 + yMin
-			}
-
-		}
-
 		let addClassList = (classtag) => {
 
 			let _cls = 'nodes-point'
@@ -389,29 +376,17 @@ class SvgMind {
 			for (let n = 0, m = linkArr[i].length; n < m; n++) {
 
 				// 得到自己的 id
-				let _thisID = linkArr[i][n];
-				let _thisInfo = _self.pointPosition[_thisID]._self;
+				let _thisPoint = linkArr[i][n];
+				let _thisInfo = _thisPoint.position;
 				let x = i * _self.option.perWidth + (_self.svgW/2) - colW;
 				let y = n * _self.option.perHeight + (_self.svgH/2) - colH;
-
-				if (i > 0) {
-					// 如果要让点与父级平行
-					if (_self.option.follow && linkArr[i].length < linkArr[i -1].length) {
-						// 得到父级的信息
-						let _parentID = _self.pointPosition[_thisID]._parent;
-						let _parent = getParentOption(_parentID);
-
-						x = _parent.x + _self.option.perWidth;
-						y = _parent.y;
-					} 
-				}
 
 				// 保存点的位置
 				_thisInfo.x = x;
 				_thisInfo.y = y;
 				
 				let circleBox = _self.svgBody.append('g')
-				.attr('id', _thisID)
+				.attr('id', _thisPoint.id)
 				.classed('nodes-box', true)
 				
 				circleBox.append('circle')
@@ -427,13 +402,13 @@ class SvgMind {
 				})
 				.on('click', function() {
 					
-					if (_self.option.selectedMode < 0) return;
+					if (!_self.option.selectedMode) return;
 
 					let className = 'focus';
 					let _this = d3.select(this);
 
 					if (!this.parentNode.matches(`.${className}`)) {
-						if ( !_self.option.selectedMode ) {
+						if ( _self.option.selectedMode === 'single' ) {
 							d3.selectAll('.focus').classed('focus', false)
 						}
 					}
@@ -443,7 +418,7 @@ class SvgMind {
 
 				});
 
-				this.drawText(circleBox, _thisInfo.name, x, y)
+				this.drawText(circleBox, _thisPoint.name, x, y)
 
 			}
 		};
@@ -483,7 +458,7 @@ class SvgMind {
 		_self.getType();
 
 		// 计算最多个数行
-		var maxTypeLength = Math.max.apply({}, (function() {
+		let maxTypeLength = Math.max.apply({}, (function() {
 			let _arr = [];
 			for (var i = 0, l = _self.pointArr.length; i < l; i++) {
 				_arr.push( _self.pointArr[i].length );
@@ -501,6 +476,10 @@ class SvgMind {
 		.attr('height', this.svgH);
 
 		this.svgBody = this.svg.append('g');
+
+		if (_self.option.autoWindows) {
+			this.svg.attr('style', 'width:100%')
+		}
 	}
 
 	setOption(option) {
@@ -511,7 +490,7 @@ class SvgMind {
 
 		this.drawPoint();
 
-		this.drawLine(this.option.data.line);
+		this.drawLine();
 
 		// 默认选择效果
 		this.events.selectFn.call(this)

@@ -27,7 +27,6 @@
 				circle: {
 					r: 12
 				},
-				// 是否支持多选, true 多选择 false 单选
 				selectedMode: false,
 				line: {
 					refX: 20
@@ -46,10 +45,9 @@
 -  option
 	- perHeight [number] 		每个点之间 y 轴距离
 	- perWidth  [number]  		每个点之间 x 轴距离
-	- follow	[boolean] 		与父级相持平行,只有在自己的个数比父级的个数少时起用
 	- circle	圆的属性
 		- r		[number] 		半径大小
-	- selectedMode [boolean] 	是否支持多选, true 多选择 false 单选
+	- selectedMode [boolean] 	是否支持选中, multiple 多选择; single 单选, false 不可以选择(默认)
 	- line		连线属性
 		- refX	[number] 		箭头的x轴偏移
 		- refY 	[number] 		箭头的y轴偏移
@@ -62,7 +60,33 @@
 		- zoom 	[function] 		缩放时的事件
 		- zoomEnd [function] 	缩放结束时事件
 
+## data Setting
 
+```javascript
+{
+    "data": {
+        "Level_1_1": {
+            "name": "Level_1_1",
+            "level": 1,
+            "lineTo": {
+                "Level_2_1": "solid",
+                "Level_2_2": "solid"
+            }
+        }, 
+        "Level_2_1": {
+            "name": "Level_2_1",
+            "level": 2,
+            "lineTo": {
+                "Level_2_2": "dotted"
+            }
+        }, 
+        "Level_2_2": {
+            "name": "Level_2_2",
+            "level": 2
+        }, 
+    }
+}
+```
 
 
 

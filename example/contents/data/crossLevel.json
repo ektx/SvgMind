@@ -1,0 +1,71 @@
+{
+    "data": {
+        "Level_1_1": {
+            "name": "Level_1_1",
+            "level": 1,
+            "lineTo": {
+                "Level_3_1": "solid",
+                "Level_3_2": "solid"
+            }
+        }, 
+        "Level_1_2": {
+            "name": "Level_1_2",
+            "level": 1,
+            "lineTo": {
+                "Level_3_1": "solid"
+            }
+        }, 
+        "Level_3_1": {
+            "name": "Level_3_1",
+            "level": 3,
+            "lineTo": {
+                "Level_3_2": "solid"
+            }
+        }, 
+        "Level_3_2": {
+            "name": "Level_3_2",
+            "level": 3,
+            "lineTo": {
+                "Level_4_1": "dotted",
+                "Level_4_2": "solid"
+            }
+        }, 
+        "Level_4_1": {
+            "name": "Level_4_1",
+            "level": 4
+        }, 
+        "Level_4_2": {
+            "name": "Level_4_2",
+            "level": 4,
+            "selected": true,
+            "lineTo": {
+                "Level_6": "dotted",
+                "Level_7_1": "solid"
+            }
+        },
+        "Level_6": {
+            "name": "Level_6",
+            "level": 6,
+            "lineTo": {
+                "Level_7_2": "dotted", 
+                "Level_11": "solid"
+            }
+        }, 
+        "Level_7_1": {
+            "name": "Level_7_1",
+            "level": 7
+        }, 
+        "Level_7_2": {
+            "name": "Level_7_2",
+            "level": 7,
+            "lineTo": {
+                "Level_11": "dotted"
+            }
+        }, 
+        "Level_11": {
+            "name": "Level_11",
+            "level": 11
+        }
+    }, 
+    "line": [ ]
+}
