@@ -1,9 +1,12 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.5.0
+	v 0.5.1
 
 	支持 默认选择功能,多选单选可自由控制
+
+	API
+	https://github.com/ektx/SvgMind
 */
 class SvgMind {
 
@@ -359,9 +362,9 @@ class SvgMind {
 				let circleBox = _self.svgBody.append('g')
 				.attr('id', _thisPoint.id)
 				.classed('nodes-box', true)
-				
+
 				circleBox.append('circle')
-				.attr('class', addClassList(_thisInfo.class))
+				.attr('class', addClassList(_thisPoint.class))
 				.attr('r', _self.circleR)
 				.attr('cx', x)
 				.attr('cy', y)

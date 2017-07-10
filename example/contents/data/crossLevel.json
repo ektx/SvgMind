@@ -3,6 +3,7 @@
         "Level_1_1": {
             "name": "Level_1_1",
             "level": 1,
+            "class": "your_class",
             "lineTo": {
                 "Level_3_1": "solid",
                 "Level_3_2": "solid"
