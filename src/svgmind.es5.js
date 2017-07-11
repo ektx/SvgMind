@@ -310,7 +310,7 @@ SvgMind.prototype = {
 
 			if (textR.length > setTxtL) {
 				for (var i = 0; i < setTxtL; i++) {
-					if (textR[nowSize] === '❤') {
+					if (textR[i] === '❤') {
 						i++;
 					}
 					result += text[nowSize]

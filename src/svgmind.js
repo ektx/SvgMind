@@ -307,7 +307,7 @@ class SvgMind {
 
 			if (textR.length > setTxtL) {
 				for (let i = 0; i < setTxtL; i++) {
-					if (textR[nowSize] === '❤') {
+					if (textR[i] === '❤') {
 						i++;
 					}
 					result += text[nowSize]
