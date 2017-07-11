@@ -305,15 +305,19 @@ SvgMind.prototype = {
 
 		if (setTxtL) {
 			var textR = text.replace(/[^\x00-\xff]/g, '❤❤');
+			var nowSize = 0;
+			var result = '';
+
 			if (textR.length > setTxtL) {
-				if (textR.slice(setTxtL, setTxtL+1) == '❤') {
-					var _t = textR.slice(0, setTxtL);
-					var xinL = _t.match(/❤/g).length;
-					var _tL = _t.length - xinL;
-					text = text.slice(0, _tL + Math.floor(xinL/2))+'...'
-				} else {
-					text = text.slice(0, setTxtL)+'...'
+				for (var i = 0; i < setTxtL; i++) {
+					if (textR[nowSize] === '❤') {
+						i++;
+					}
+					result += text[nowSize]
+					nowSize++;
 				}
+
+				text = result+'...'
 			}
 		}
 

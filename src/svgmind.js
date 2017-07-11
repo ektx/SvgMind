@@ -302,15 +302,19 @@ class SvgMind {
 
 		if (setTxtL) {
 			let textR = text.replace(/[^\x00-\xff]/g, '❤❤');
+			let nowSize = 0;
+			let result = '';
+
 			if (textR.length > setTxtL) {
-				if (textR.slice(setTxtL, setTxtL+1) == '❤') {
-					let _t = textR.slice(0, setTxtL);
-					let xinL = _t.match(/❤/g).length;
-					let _tL = _t.length - xinL;
-					text = text.slice(0, _tL + Math.floor(xinL/2))+'...'
-				} else {
-					text = text.slice(0, setTxtL)+'...'
+				for (let i = 0; i < setTxtL; i++) {
+					if (textR[nowSize] === '❤') {
+						i++;
+					}
+					result += text[nowSize]
+					nowSize++;
 				}
+
+				text = result+'...'
 			}
 		}
 
