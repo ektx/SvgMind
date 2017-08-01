@@ -1,0 +1,53 @@
+{
+    "data": {
+        "Level_1_1": {
+            "name": "Ektx",
+            "level": 1,
+            "icon": "contents/img/kings.png",
+            "class": "your_class",
+            "lineTo": {
+                "Level_2_1": {
+                	"type": "solid",
+                	"text": "原籍"
+                },
+                "Level_2_2": {
+                	"type": "solid",
+                	"text": "工作"
+                }
+            }
+        }, 
+        "Level_2_1": {
+            "name": "安徽",
+            "level": 2,
+            "lineTo": {
+            }
+        }, 
+        "Level_2_2": {
+            "name": "浙江",
+            "level": 2,
+            "lineTo": {
+            	"Level_3_1": {
+            		"type":"solid"
+            	},
+            	"Level_3_2": {
+            		"type": "solid"
+            	},
+            	"Level_3_3": {
+            		"type": "solid"
+            	}
+            }
+        },
+        "Level_3_1": {
+           "name": "杭州",
+            "level": 3
+        },
+        "Level_3_2": {
+           "name": "宁波",
+            "level": 3
+        },
+        "Level_3_3": {
+           "name": "台州",
+            "level": 3
+        }
+    }
+}

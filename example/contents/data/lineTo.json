@@ -4,30 +4,42 @@
             "name": "线上前置机.ZXX_XS_JBXX",
             "level": 1,
             "lineTo": {
-                "B0001": "solid",
-                "C0001": "solid"
+                "B0001": {
+					"type": "solid"
+				},
+                "C0001": {
+					"type": "solid"
+				}
             }
         }, 
         "A1001": {
             "name": "A1001",
             "level": 1,
             "lineTo": {
-                "B0001": "solid"
+                "B0001": {
+					"type": "solid"
+				}
             }
         }, 
         "B0001": {
             "name": "this is a test",
             "level": 2,
             "lineTo": {
-                "C0001": "solid"
+                "C0001": {
+					"type": "solid"
+				}
             }
         }, 
         "C0001": {
             "name": "C0001C0001C0001C0001C0001",
             "level": 3,
             "lineTo": {
-                "D0001": "dotted",
-                "D0002": "solid"
+                "D0001": {
+					"type": "dotted"
+				},
+                "D0002": {
+					"type": "solid"
+				}
             }
         }, 
         "D0001": {
@@ -40,16 +52,24 @@
             "level": 4,
             "selected": true,
             "lineTo": {
-                "E0001": "dotted",
-                "E0002": "solid"
+                "E0001": {
+					"type": "dotted"
+				},
+                "E0002": {
+					"type": "solid"
+				}
             }
         },
         "E0001": {
             "name": "E0001",
             "level": 5,
             "lineTo": {
-                "F7001": "dotted", 
-                "F9001": "solid"
+                "F7001": {
+					"type": "dotted"
+				}, 
+                "F9001": {
+					"type": "solid"
+				}
             }
         }, 
         "E0002": {
