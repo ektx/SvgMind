@@ -60,30 +60,39 @@
 		- zoom 	[function] 		缩放时的事件
 		- zoomEnd [function] 	缩放结束时事件
 
-## data Setting
+## 数据结构说明 (data Setting)
 
 ```javascript
+// 此数据来此 example 中的 人物关系图.html
 {
     "data": {
+    	// 节点关键字(node key)
         "Level_1_1": {
-            "name": "Level_1_1",
+        	// node name
+            "name": "Ektx",
             "level": 1,
+            // node image
+            "icon": "contents/img/kings.png",
+            // set class
+            "class": "your_class",
+            // children
             "lineTo": {
-                "Level_2_1": "solid",
-                "Level_2_2": "solid"
+                "Level_2_1": {
+                	"type": "solid",
+                	"text": "原籍"
+                },
+                "Level_2_2": {
+                	"type": "solid",
+                	"text": "工作"
+                }
             }
         }, 
+        // 节点关键字(node key)
         "Level_2_1": {
-            "name": "Level_2_1",
-            "level": 2,
-            "lineTo": {
-                "Level_2_2": "dotted"
-            }
-        }, 
-        "Level_2_2": {
-            "name": "Level_2_2",
+        	// node name
+            "name": "安徽",
             "level": 2
-        }, 
+        }
     }
 }
 ```
