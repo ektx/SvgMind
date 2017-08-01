@@ -1,7 +1,7 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.5.2
+	v 0.6.0
 
 	支持 默认选择功能,多选单选可自由控制
 
@@ -273,7 +273,7 @@ SvgMind.prototype = {
 				// 添加箭头
 				.classed('end-solid-arrow', true)
 				// 添加线的属性
-				.classed(rootData[id].lineTo[innerNode]+'-line', true) 
+				.classed(rootData[id].lineTo[innerNode].type+'-line', true) 
 				.attr('x1', rootData[id].position.x)
 				.attr('y1', rootData[id].position.y)
 				.attr('x2', rootData[innerNode].position.x)
@@ -284,6 +284,28 @@ SvgMind.prototype = {
 				// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
 				// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
 				// ))
+
+
+				// 添加说明
+				if ( rootData[id].lineTo[innerNode].text ) {
+					let lineTxtID = id + '_' + innerNode;
+					lineBox.append('defs')
+					.append('path')
+					.attr('id', lineTxtID)
+					.attr('d', 'M'+rootData[id].position.x+' '+rootData[id].position.y+' '+rootData[innerNode].position.x+' '+rootData[innerNode].position.y)
+
+					lineBox
+					.append('text')
+					.classed('line-to-text', true)
+					.attr('text-anchor', 'middle')
+					.attr('dy', -3)
+					.append('textPath')
+					.attr('startOffset', '50%')
+					.attr('xlink:href', '#'+lineTxtID)
+					.text( rootData[id].lineTo[innerNode].text )
+
+
+				}
 			}
 		}
 
@@ -361,6 +383,7 @@ SvgMind.prototype = {
 				var _thisInfo = _thisPoint.position;
 				var x = i * _self.option.perWidth + (_self.svgW/2) - colW;
 				var y = n * _self.option.perHeight + (_self.svgH/2) - colH;
+				var iconID = '';
 
 				// 保存点的位置
 				_thisInfo.x = x;
@@ -369,12 +392,32 @@ SvgMind.prototype = {
 				var circleBox = _self.svgBody.append('g')
 				.attr('id', _thisPoint.id)
 				.classed('nodes-box', true)
-				
+
+				if (_thisPoint.icon && _thisPoint.icon.length) {
+					iconID = 'svgMindIcon-' + +new Date();
+
+					let circlePatternBox = _self.circleImgBox
+					.append('pattern')
+					.attr('id', iconID)
+					.attr('patternContentUnits', 'objectBoundingBox')
+					.attr('width', 1)
+					.attr('height', 1);
+
+					circlePatternBox.append('image')
+					.attr('width', 1)
+					.attr('height', 1)
+					.attr('xlink:href', _thisPoint.icon)
+
+				}
+
 				circleBox.append('circle')
 				.attr('class', addClassList(_thisPoint.class))
 				.attr('r', _self.circleR)
 				.attr('cx', x)
 				.attr('cy', y)
+				.style('fill', function() {
+					return iconID ? 'url(#'+ iconID +')' : ''
+				})
 				.on('mouseover', function() {
 					d3.select(this.previousSibling).classed('hover', true)
 				})
@@ -430,6 +473,17 @@ SvgMind.prototype = {
 		}
 	},
 
+	/*
+		用于绘制圆中的图片功能
+		------------------------------------
+	*/
+	drawCircleImg: function() {
+		this.circleImgBox = this.svgBody
+			.append('svg:defs')
+			.attr('id', 'svgmind-circleImgs');
+
+	},
+
 	init: function(option) {
 
 		var _self = this;
@@ -469,6 +523,8 @@ SvgMind.prototype = {
 
 		this.drawMarker();
 
+		this.drawCircleImg();
+		
 		this.drawPoint();
 
 		this.drawLine();

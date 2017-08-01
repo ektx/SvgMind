@@ -5,30 +5,42 @@
             "level": 1,
             "class": "your_class",
             "lineTo": {
-                "Level_3_1": "solid",
-                "Level_3_2": "solid"
+                "Level_3_1": {
+					"type": "solid"
+				},
+                "Level_3_2": {
+					"type": "solid"
+				}
             }
         }, 
         "Level_1_2": {
             "name": "Level_1_2",
             "level": 1,
             "lineTo": {
-                "Level_3_1": "solid"
+                "Level_3_1": {
+					"type": "solid"
+				}
             }
         }, 
         "Level_3_1": {
             "name": "Level_3_1",
             "level": 3,
             "lineTo": {
-                "Level_3_2": "solid"
+                "Level_3_2": {
+					"type": "solid"
+				}
             }
         }, 
         "Level_3_2": {
             "name": "Level_3_2",
             "level": 3,
             "lineTo": {
-                "Level_4_1": "dotted",
-                "Level_4_2": "solid"
+                "Level_4_1": {
+					"type": "dotted"
+				},
+                "Level_4_2": {
+					"type": "solid"
+				}
             }
         }, 
         "Level_4_1": {
@@ -40,16 +52,24 @@
             "level": 4,
             "selected": true,
             "lineTo": {
-                "Level_6": "dotted",
-                "Level_7_1": "solid"
+                "Level_6": {
+					"type": "dotted"
+				},
+                "Level_7_1": {
+					"type": "solid"
+				}
             }
         },
         "Level_6": {
             "name": "Level_6",
             "level": 6,
             "lineTo": {
-                "Level_7_2": "dotted", 
-                "Level_11": "solid"
+                "Level_7_2": {
+					"type": "dotted"
+				}, 
+                "Level_11": {
+					"type": "solid"
+				}
             }
         }, 
         "Level_7_1": {
@@ -60,7 +80,9 @@
             "name": "Level_7_2",
             "level": 7,
             "lineTo": {
-                "Level_11": "dotted"
+                "Level_11": {
+					"type": "dotted"
+				}
             }
         }, 
         "Level_11": {
