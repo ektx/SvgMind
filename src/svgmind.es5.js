@@ -1,7 +1,7 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.6.0
+	v 0.6.1
 
 	支持 默认选择功能,多选单选可自由控制
 
@@ -394,7 +394,7 @@ SvgMind.prototype = {
 				.classed('nodes-box', true)
 
 				if (_thisPoint.icon && _thisPoint.icon.length) {
-					iconID = 'svgMindIcon-' + +new Date();
+					iconID = 'svgMindIcon-' + _thisPoint.id;
 
 					let circlePatternBox = _self.circleImgBox
 					.append('pattern')

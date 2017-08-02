@@ -18,12 +18,14 @@
         }, 
         "Level_2_1": {
             "name": "安徽",
+            "icon": "contents/img/king2.png",
             "level": 2,
             "lineTo": {
             }
         }, 
         "Level_2_2": {
             "name": "浙江",
+            "icon": "contents/img/king3.png",
             "level": 2,
             "lineTo": {
             	"Level_3_1": {
