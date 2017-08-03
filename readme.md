@@ -59,6 +59,7 @@
 	- events 	事件
 		- zoom 	[function] 		缩放时的事件
 		- zoomEnd [function] 	缩放结束时事件
+		- click  [function]     点击事件
 
 ## 数据结构说明 (data Setting)
 

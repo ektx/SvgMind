@@ -1,7 +1,7 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.6.1
+	v 0.6.2
 
 	支持 默认选择功能,多选单选可自由控制
 
@@ -426,6 +426,11 @@ SvgMind.prototype = {
 				})
 				.on('click', function() {
 					
+					// 添加点击事件
+					if (_self.option.events.click && typeof _self.option.events.click == 'function') {
+						_self.option.events.click(this.parentNode, _self.option.data.data[this.parentNode.id])
+					}
+
 					if (!_self.option.selectedMode) return;
 
 					var className = 'focus';
