@@ -4,11 +4,15 @@
 	<meta charset="UTF-8">
 	<title>跨级效果 - SVG Mind</title>
 
-	<link rel="stylesheet" href="contents/css/reset-1.3.3.css">
+	<link rel="stylesheet" href="contents/css/reset-1.3.5.css">
+	<!-- demo 示例样式表 -->
+	<link rel="stylesheet" href="contents/css/layout.css">
+	<!-- 插件样式表 -->
 	<link rel="stylesheet" href="contents/css/svgmind.css">
 
 </head>
 <body>
+	<!-- 显示区域 -->
 	<section id="my-mind-box"></section>
 
 	<footer>重置</footer>
@@ -16,16 +20,17 @@
 	<script src="contents/d3/d3.min.js"></script>
 	<script src="../src/svgmind.js"></script>
 	<script>
-	/*
-		此 demo 中的点与线,使用的是父级的 lineTo
-	*/
-		var mymind = new SvgMind();
+		let mymind = new SvgMind();
 		
 		mymind.ajax({
 			url: 'contents/data/crossLevel.json'
 		}, function(data) {
 
-			var option = {
+			/*
+				API:
+				readme.md
+			*/
+			let option = {
 				el: '#my-mind-box',
 				data: data,
 				perHeight: 100,
@@ -36,7 +41,8 @@
 				// 单选
 				selectedMode: 'single',
 				line: {
-					refX: 20
+					refX: 20,
+					smooth: true
 				},
 				text: {
 					dy: '2.5em',
@@ -59,7 +65,7 @@
 		});
 
 		document.querySelector('footer').addEventListener('click', function() {
-			mymind.events.transform.call(mymind, 0, 0, 1)
+			mymind.events.transform.apply(mymind, [0, 0, 1])
 		})
 	</script>
 </body>

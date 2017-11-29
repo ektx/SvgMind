@@ -1,7 +1,7 @@
 {
     "data": {
         "Level_1_1": {
-            "name": "Ektx",
+            "name": "EKTX",
             "level": 1,
             "icon": "contents/img/kings.png",
             "class": "your_class",
@@ -18,14 +18,14 @@
         }, 
         "Level_2_1": {
             "name": "安徽",
-            "icon": "contents/img/king2.png",
+            "icon": "contents/img/ah.png",
             "level": 2,
             "lineTo": {
             }
         }, 
         "Level_2_2": {
             "name": "浙江",
-            "icon": "contents/img/king3.png",
+            "icon": "contents/img/zj.png",
             "level": 2,
             "lineTo": {
             	"Level_3_1": {

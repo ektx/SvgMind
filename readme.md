@@ -6,6 +6,12 @@
 ## 使用(Usage)
 
 ```html
+	<head>
+		<!-- 插件样式表 -->
+		<link rel="stylesheet" href="contents/css/svgmind.css">
+		...
+	</head>
+	
 	<!-- 显示区域(display area) -->
 	<section id="my-mind-box"></section>
 	<!-- use d3.js -->
@@ -48,9 +54,10 @@
 	- circle	圆的属性
 		- r		[number] 		半径大小
 	- selectedMode [boolean] 	是否支持选中, multiple 多选择; single 单选, false 不可以选择(默认)
-	- line		连线属性
-		- refX	[number] 		箭头的x轴偏移
-		- refY 	[number] 		箭头的y轴偏移
+	- line		    连线属性
+		- refX	    [number] 		箭头的x轴偏移
+		- refY 	    [number] 		箭头的y轴偏移
+		- smooth    [boolean]		是否平滑连线 `New`
 	- text		文字属性
 		- textAnchor [start | middle | end]  文字位置
 		- dy	[number] 		文字的y轴偏移

@@ -1,31 +1,33 @@
-@charset 'utf-8';
+@charset "utf-8";
 
-#my-mind-box {
-	width: 100vw;
-	height: 100vh;
-}
+/*
+	基础样式表
+	---------------------------------------------
+*/
 
-
-#my-mind-box circle {
-	cursor: pointer;
-}
-
+/* 点 */
 .nodes-point {
     fill: #8BC34A;
     stroke: #4CAF50;
     stroke-width: 1;
     transition: fill .4s ease, stroke .4s ease;
 }
-
+/* 点 鼠标移入时 */
 .nodes-point:hover {
     fill: #CDDC39;
     stroke: #8BC34A;
 }
+/* 点 获取焦点时 */
 .focus .nodes-point {
 	fill: #FFEB3B;
     stroke: #FFC107;
 }
 
+.node-line-box path {
+	stroke-width: 1;
+	stroke: #ddd;
+	fill: transparent;
+}
 .node-line-box line.dotted-line,
 .node-line-box line.solid-line {
 	stroke-width: 1;
@@ -36,16 +38,6 @@
 	stroke-dasharray: 3 2;
 }
 
-.node-line-box.hover line {
-	stroke: #9E9E9E;
-}
-.nodes-box.focus line {
-	stroke: #FFC107;
-}
-
-
-.arrow-ico {
-}
 #end-arrow {
 	fill: #ddd;
     transition: fill .4s ease;
@@ -58,41 +50,18 @@
 	fill: #FFC107;
     transition: fill .4s ease;
 }
-line.end-solid-arrow {
+.end-solid-arrow {
 	marker-end: url(#end-arrow);
 }
 
-.node-line-box.hover line.end-solid-arrow {
-	marker-end: url(#end-hover-arrow);
-}
-.nodes-box.focus line.end-solid-arrow {
+
+/* 选中时 */
+/* 箭头效果 */
+.nodes-box.focus .end-solid-arrow {
 	marker-end: url(#end-focus-arrow);
 }
-
-.node-line-box path {
-	stroke-width: 1;
-	stroke: #ddd;
-	fill: transparent;
-}
-
-footer {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background: rgba(255, 255, 255, .6);
-	line-height: 10vh;
-	font-size: 24px;
-	text-align: center;
-	user-select: none;
-	cursor: pointer;
-	opacity: 0;
-	visibility: hidden;
-}
-footer:hover {
-	color: #09f;
-}
-footer.show {
-	visibility: visible;
-	opacity: 1;
+/* 线条效果 */
+.nodes-box.focus .node-line-box path,
+.nodes-box.focus .node-line-box path {
+	stroke: #FFC107;
 }

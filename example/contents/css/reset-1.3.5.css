@@ -1,10 +1,10 @@
-@charset "utf8";
+@charset "UTF-8";
 
 /*
 	reset.css
 	重置浏览器的常用样式
-	zwl 2017-6-11
-	@version 1.3.3
+	@author: ektx
+	@version 1.3.5
 */
 
 html, body, div, section, header, span, /* structural elements 结构元素 */
@@ -46,12 +46,12 @@ img {
 	content: '';
 }
 
-body {
-
+html {
 	font: 12px "Microsoft Yahei","HanHei SC","PingHei","PingFang SC","STHeitiSC-Light","Helvetica Neue","Helvetica","Arial",sans-serif;
 	-ms-text-size-adjust: 100%; /* 2 */
 	-webkit-text-size-adjust: 100%; /* 2 */
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 button, input {
@@ -78,85 +78,3 @@ button, input {
 		background-color: #ccc;
 	}
  */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

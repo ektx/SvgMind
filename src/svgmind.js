@@ -1,7 +1,7 @@
 /*
 	SVG Mind
 	--------------------------------
-	v 0.6.2
+	v 0.7.0
 
 	支持 默认选择功能,多选单选可自由控制
 
@@ -127,7 +127,9 @@ class SvgMind {
 				// 箭头的x轴偏移
 				refX: 0,
 				// 箭头的y轴偏移
-				refY: 0
+				refY: 0,
+				// 是否平滑连线
+				smooth: false
 			},
 			text: {
 				// 文字位置 start | middle | end 
@@ -209,9 +211,9 @@ class SvgMind {
 		t.y = parseFloat(t.y);
 		t.x = parseFloat(t.x);
 
-		return 'M'+ s.y +','+s.x
-		+ 'C' + (s.y + t.y) /2 + ',' + s.x
-		+ ' ' + (s.y + t.y) /2 + ',' + t.x
+		return 'M'+ s.x +','+s.y
+		+ 'C' + (s.x + t.x) /2 + ',' + s.y
+		+ ' ' + (s.x + t.x) /2 + ',' + t.y
 		+ ' ' + t.x +',' + t.y;
 	}
 
@@ -265,21 +267,33 @@ class SvgMind {
 			for (let innerNode in rootData[id].lineTo) {
 
 				// 2.添加线
-				lineBox.append('line')
-				// 添加箭头
-				.classed('end-solid-arrow', true)
-				// 添加线的属性
-				.classed(`${rootData[id].lineTo[innerNode].type}-line`, true) 
-				.attr('x1', rootData[id].position.x)
-				.attr('y1', rootData[id].position.y)
-				.attr('x2', rootData[innerNode].position.x)
-				.attr('y2', rootData[innerNode].position.y);
+				if (_self.option.line.smooth) {
 
-				// lineBox.append('path')
-				// .attr('d', _self.diagonal(
-				// 	{x: thisPoint.attr('cx'), y: thisPoint.attr('cy')},
-				// 	{x: childNodePoint.attr('cy'), y: childNodePoint.attr('cx')}
-				// ))
+					lineBox.append('path')
+					// 添加箭头
+					.classed('end-solid-arrow', true)
+					.attr('d', _self.diagonal(
+						{
+							x: rootData[id].position.x, 
+							y: rootData[id].position.y,
+						},
+						{
+							x: rootData[innerNode].position.x, 
+							y: rootData[innerNode].position.y
+						}
+					))
+				} else {
+					lineBox.append('line')
+					// 添加箭头
+					.classed('end-solid-arrow', true)
+					// 添加线的属性
+					.classed(`${rootData[id].lineTo[innerNode].type}-line`, true) 
+					.attr('x1', rootData[id].position.x)
+					.attr('y1', rootData[id].position.y)
+					.attr('x2', rootData[innerNode].position.x)
+					.attr('y2', rootData[innerNode].position.y);
+				}
+
 
 				// 添加说明
 				if ( rootData[id].lineTo[innerNode].text ) {
